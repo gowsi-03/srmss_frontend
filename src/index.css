@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #0d9488;    /* Teal-600 */
+  --color-brand-secondary: #4f46e5;  /* Indigo-600 */
+  --color-brand-accent: #f59e0b;     /* Amber-500 */
+  --color-brand-dark: #0f172a;       /* Slate-900 */
+}
+
+/* Base custom styles to integrate Leaflet map icons and fix scrollbars */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #0f172a; /* brand-dark */
+  color: #f8fafc; /* Slate-50 */
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Custom Scrollbar for modern visual aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e293b; /* Slate-800 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155; /* Slate-700 */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0d9488; /* Teal-600 */
+}
+
+/* Leaflet map styles to fit dashboard layouts */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.75rem;
+  z-index: 10;
+}
