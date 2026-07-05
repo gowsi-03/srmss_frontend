@@ -442,7 +442,7 @@ const Schedules: React.FC = () => {
           <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-zoomIn">
             <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
               <h3 className="text-base font-semibold text-slate-100">Schedule New Depot Trip</h3>
-              <button onClick={() => setShowCreateModal(false)} className="text-slate-400 hover:text-slate-200 cursor-pointer">
+              <button onClick={() => { setErrorMsg(''); setShowCreateModal(false); }} className="text-slate-400 hover:text-slate-200 cursor-pointer">
                 <X size={20} />
               </button>
             </div>
@@ -545,7 +545,7 @@ const Schedules: React.FC = () => {
               <div className="flex justify-end space-x-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => setShowCreateModal(false)}
+                  onClick={() => { setErrorMsg(''); setShowCreateModal(false); }}
                   className="px-4 py-2 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-xl text-xs font-semibold cursor-pointer transition"
                 >
                   Cancel
@@ -568,7 +568,7 @@ const Schedules: React.FC = () => {
           <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-zoomIn">
             <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
               <h3 className="text-base font-semibold text-slate-100">Adjust Timetable / Log Actuals</h3>
-              <button onClick={() => setShowEditModal(false)} className="text-slate-400 hover:text-slate-200 cursor-pointer">
+              <button onClick={() => { setErrorMsg(''); setShowEditModal(false); }} className="text-slate-400 hover:text-slate-200 cursor-pointer">
                 <X size={20} />
               </button>
             </div>
@@ -654,7 +654,7 @@ const Schedules: React.FC = () => {
               <div className="flex justify-end space-x-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => setShowEditModal(false)}
+                  onClick={() => { setErrorMsg(''); setShowEditModal(false); }}
                   className="px-4 py-2 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-xl text-xs font-semibold cursor-pointer transition"
                 >
                   Cancel
