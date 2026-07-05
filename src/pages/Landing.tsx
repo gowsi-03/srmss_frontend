@@ -107,7 +107,7 @@ const Landing: React.FC = () => {
         </div>
 
         {/* Feature Cards Grid */}
-        <section className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-20">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-20">
           <div className="p-6 bg-slate-900/50 border border-slate-900 hover:border-slate-800 rounded-2xl transition space-y-4">
             <span className="inline-block p-2.5 bg-teal-500/10 border border-teal-500/20 text-teal-400 rounded-xl">
               <CalendarDays size={20} />
@@ -158,7 +158,7 @@ const Landing: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {credentials.map((cred, idx) => (
               <div 
                 key={idx} 
@@ -171,24 +171,28 @@ const Landing: React.FC = () => {
 
                 <div className="space-y-1.5 pt-2 border-t border-slate-900">
                   {/* Email row */}
-                  <div className="flex items-center justify-between bg-slate-950/60 p-2 rounded-lg border border-slate-850">
-                    <span className="text-[10px] font-mono text-slate-500">Email:</span>
-                    <span className="text-[10px] font-mono text-slate-300 font-semibold">{cred.email}</span>
+                  <div className="flex items-center justify-between gap-1 bg-slate-950/60 p-2 rounded-lg border border-slate-850 overflow-hidden">
+                    <div className="flex items-center space-x-1.5 min-w-0">
+                      <span className="text-[9px] font-mono text-slate-500 shrink-0">Email:</span>
+                      <span className="text-[10px] font-mono text-slate-300 font-semibold truncate" title={cred.email}>{cred.email}</span>
+                    </div>
                     <button 
                       onClick={() => copyToClipboard(cred.email, `${cred.role}-email`)}
-                      className="p-1 hover:bg-slate-800 rounded transition cursor-pointer text-slate-500 hover:text-slate-300"
+                      className="p-1 hover:bg-slate-850 rounded transition cursor-pointer text-slate-500 hover:text-slate-300 shrink-0"
                     >
                       {copiedText === `${cred.role}-email` ? <Check size={12} className="text-teal-400" /> : <Clipboard size={12} />}
                     </button>
                   </div>
 
                   {/* Password row */}
-                  <div className="flex items-center justify-between bg-slate-950/60 p-2 rounded-lg border border-slate-850">
-                    <span className="text-[10px] font-mono text-slate-500">Password:</span>
-                    <span className="text-[10px] font-mono text-slate-300 font-semibold">{cred.pass}</span>
+                  <div className="flex items-center justify-between gap-1 bg-slate-950/60 p-2 rounded-lg border border-slate-850 overflow-hidden">
+                    <div className="flex items-center space-x-1.5 min-w-0">
+                      <span className="text-[9px] font-mono text-slate-500 shrink-0">Pass:</span>
+                      <span className="text-[10px] font-mono text-slate-300 font-semibold truncate" title={cred.pass}>{cred.pass}</span>
+                    </div>
                     <button 
                       onClick={() => copyToClipboard(cred.pass, `${cred.role}-pass`)}
-                      className="p-1 hover:bg-slate-800 rounded transition cursor-pointer text-slate-500 hover:text-slate-300"
+                      className="p-1 hover:bg-slate-850 rounded transition cursor-pointer text-slate-550 hover:text-slate-300 shrink-0"
                     >
                       {copiedText === `${cred.role}-pass` ? <Check size={12} className="text-teal-400" /> : <Clipboard size={12} />}
                     </button>
