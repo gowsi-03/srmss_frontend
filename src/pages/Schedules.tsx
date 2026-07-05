@@ -234,7 +234,7 @@ const Schedules: React.FC = () => {
       </div>
 
       {/* Alerts */}
-      {errorMsg && (
+      {errorMsg && !showCreateModal && !showEditModal && (
         <div className="p-4 bg-red-950/40 border border-red-500/30 rounded-xl text-red-400 text-sm flex items-center space-x-3">
           <AlertCircle size={20} className="shrink-0" />
           <span>{errorMsg}</span>
