@@ -513,7 +513,8 @@ const Schedules: React.FC = () => {
                     required
                     value={departureTime}
                     onChange={(e) => setDepartureTime(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500"
+                    onClick={(e) => e.currentTarget.showPicker()}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500 cursor-pointer"
                   />
                 </div>
 
@@ -525,7 +526,8 @@ const Schedules: React.FC = () => {
                     required
                     value={arrivalTime}
                     onChange={(e) => setArrivalTime(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500"
+                    onClick={(e) => e.currentTarget.showPicker()}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500 cursor-pointer"
                   />
                 </div>
               </div>
@@ -623,7 +625,8 @@ const Schedules: React.FC = () => {
                     type="datetime-local"
                     value={actualDepartureTime}
                     onChange={(e) => setActualDepartureTime(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500"
+                    onClick={(e) => e.currentTarget.showPicker()}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500 cursor-pointer"
                   />
                 </div>
 
@@ -634,7 +637,8 @@ const Schedules: React.FC = () => {
                     type="datetime-local"
                     value={actualArrivalTime}
                     onChange={(e) => setActualArrivalTime(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500"
+                    onClick={(e) => e.currentTarget.showPicker()}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500 cursor-pointer"
                   />
                 </div>
               </div>
