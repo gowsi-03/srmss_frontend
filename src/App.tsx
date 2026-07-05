@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
+import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Schedules from './pages/Schedules';
@@ -30,7 +31,7 @@ const ProtectedRoute: React.FC<{
   }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;
@@ -41,12 +42,14 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          {/* Public Landing Page */}
+          <Route path="/" element={<Landing />} />
+
           {/* Public Auth Page */}
           <Route path="/login" element={<Login />} />
 
-          {/* Protected Main Shell */}
+          {/* Protected Main Shell (Pathless layout route) */}
           <Route 
-            path="/" 
             element={
               <ProtectedRoute>
                 <Layout />
@@ -54,23 +57,23 @@ function App() {
             }
           >
             {/* Dashboard (Home) */}
-            <Route index element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
 
             {/* Timetable Scheduler */}
-            <Route path="schedules" element={<Schedules />} />
+            <Route path="/schedules" element={<Schedules />} />
 
             {/* Route Stops Sequencer */}
-            <Route path="routes" element={<RoutesPage />} />
+            <Route path="/routes" element={<RoutesPage />} />
 
             {/* Fuel & Maintenance log */}
-            <Route path="logs" element={<FuelMaintenance />} />
+            <Route path="/logs" element={<FuelMaintenance />} />
 
             {/* Drivers & Vehicle Registry */}
-            <Route path="fleet" element={<Fleet />} />
+            <Route path="/fleet" element={<Fleet />} />
 
             {/* Reports & Analytics (Admins & Supervisors only) */}
             <Route 
-              path="reports" 
+              path="/reports" 
               element={
                 <ProtectedRoute allowedRoles={['ADMIN', 'SUPERVISOR']}>
                   <Reports />
@@ -88,4 +91,5 @@ function App() {
 }
 
 export default App;
+
 

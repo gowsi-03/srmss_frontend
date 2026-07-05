@@ -25,7 +25,7 @@ const Login: React.FC = () => {
     try {
       if (isLogin) {
         await login(email, password);
-        navigate('/');
+        navigate('/dashboard');
       } else {
         await register(email, password, name, role);
         setSuccessMsg('Account registered successfully! Please log in.');

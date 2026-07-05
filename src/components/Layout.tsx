@@ -23,7 +23,7 @@ const Layout: React.FC = () => {
   };
 
   const navItems = [
-    { to: '/', name: 'Dashboard', icon: <LayoutDashboard size={20} />, roles: ['ADMIN', 'SUPERVISOR', 'OPERATOR'] },
+    { to: '/dashboard', name: 'Dashboard', icon: <LayoutDashboard size={20} />, roles: ['ADMIN', 'SUPERVISOR', 'OPERATOR'] },
     { to: '/schedules', name: 'Timetables', icon: <CalendarDays size={20} />, roles: ['ADMIN', 'SUPERVISOR', 'OPERATOR'] },
     { to: '/routes', name: 'Route Stops', icon: <Map size={20} />, roles: ['ADMIN', 'SUPERVISOR', 'OPERATOR'] },
     { to: '/logs', name: 'Fuel & Service', icon: <Flame size={20} />, roles: ['ADMIN', 'SUPERVISOR', 'OPERATOR'] },
