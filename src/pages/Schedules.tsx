@@ -158,6 +158,8 @@ const Schedules: React.FC = () => {
 
   // Open edit modal
   const openEdit = (trip: Trip) => {
+    setErrorMsg('');
+    setSuccessMsg('');
     setSelectedTrip(trip);
     setTripStatus(trip.status);
     setDelayMinutes(trip.delayMinutes);
@@ -218,7 +220,11 @@ const Schedules: React.FC = () => {
         </div>
         {canModify && (
           <button
-            onClick={() => setShowCreateModal(true)}
+            onClick={() => {
+              setErrorMsg('');
+              setSuccessMsg('');
+              setShowCreateModal(true);
+            }}
             className="flex items-center space-x-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-500 rounded-xl text-sm font-semibold text-white shadow-lg cursor-pointer transition"
           >
             <Plus size={18} />
@@ -442,6 +448,12 @@ const Schedules: React.FC = () => {
             </div>
 
             <form onSubmit={handleCreateTrip} className="p-6 space-y-4">
+              {errorMsg && (
+                <div className="p-4 bg-red-950/40 border border-red-500/30 rounded-xl text-red-400 text-sm flex items-center space-x-3">
+                  <AlertCircle size={20} className="shrink-0" />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
               {/* Select Route */}
               <div>
                 <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Transit Route</label>
@@ -562,6 +574,12 @@ const Schedules: React.FC = () => {
             </div>
 
             <form onSubmit={handleUpdateTrip} className="p-6 space-y-4">
+              {errorMsg && (
+                <div className="p-4 bg-red-950/40 border border-red-500/30 rounded-xl text-red-400 text-sm flex items-center space-x-3">
+                  <AlertCircle size={20} className="shrink-0" />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
               {/* Trip details summary */}
               <div className="p-3 bg-slate-950/60 border border-slate-800 rounded-xl text-xs space-y-1">
                 <p><span className="text-slate-500">Route:</span> <span className="font-semibold text-slate-200">{selectedTrip.route.routeNumber} - {selectedTrip.route.name}</span></p>
