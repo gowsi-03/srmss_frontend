@@ -8,7 +8,8 @@ import {
   Search, 
   X, 
   Trash2,
-  Phone
+  Phone,
+  Edit3
 } from 'lucide-react';
 
 interface Driver {
@@ -46,18 +47,23 @@ const Fleet: React.FC = () => {
   // Search filter
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // Modals
+  // Add Modals
   const [showDriverModal, setShowDriverModal] = useState<boolean>(false);
   const [showVehicleModal, setShowVehicleModal] = useState<boolean>(false);
 
-  // Driver Form
+  // Edit Modals
+  const [showEditDriverModal, setShowEditDriverModal] = useState<boolean>(false);
+  const [showEditVehicleModal, setShowEditVehicleModal] = useState<boolean>(false);
+  const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+
+  // Form inputs (shared between Create and Edit)
   const [driverName, setDriverName] = useState<string>('');
   const [licenseNumber, setLicenseNumber] = useState<string>('');
   const [licenseValidity, setLicenseValidity] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [driverStatus, setDriverStatus] = useState<'ACTIVE' | 'INACTIVE' | 'ON_LEAVE'>('ACTIVE');
 
-  // Vehicle Form
   const [regNumber, setRegNumber] = useState<string>('');
   const [model, setModel] = useState<string>('');
   const [make, setMake] = useState<string>('');
@@ -92,7 +98,7 @@ const Fleet: React.FC = () => {
     fetchRegistry();
   }, [searchQuery]);
 
-  // Submit Driver Form
+  // Submit Driver Form (Add)
   const handleAddDriver = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
@@ -121,7 +127,49 @@ const Fleet: React.FC = () => {
     }
   };
 
-  // Submit Vehicle Form
+  // Open Edit Driver modal
+  const openEditDriver = (driver: Driver) => {
+    setSelectedDriver(driver);
+    setDriverName(driver.name);
+    setLicenseNumber(driver.licenseNumber);
+    setLicenseValidity(driver.licenseValidity.slice(0, 10)); // Extract YYYY-MM-DD
+    setPhoneNumber(driver.phoneNumber);
+    setDriverStatus(driver.status);
+    setShowEditDriverModal(true);
+  };
+
+  // Submit Edit Driver form
+  const handleEditDriver = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedDriver) return;
+    setErrorMsg('');
+    setSuccessMsg('');
+
+    try {
+      await apiClient.put(`/drivers/${selectedDriver.id}`, {
+        name: driverName,
+        licenseNumber,
+        licenseValidity: new Date(licenseValidity).toISOString(),
+        phoneNumber,
+        status: driverStatus,
+      });
+
+      setSuccessMsg('Driver profile updated successfully!');
+      setShowEditDriverModal(false);
+      setSelectedDriver(null);
+      // Reset form fields
+      setDriverName('');
+      setLicenseNumber('');
+      setLicenseValidity('');
+      setPhoneNumber('');
+      fetchRegistry();
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg(err.response?.data?.message || 'Failed to update driver details.');
+    }
+  };
+
+  // Submit Vehicle Form (Add)
   const handleAddVehicle = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
@@ -150,6 +198,53 @@ const Fleet: React.FC = () => {
     } catch (err: any) {
       console.error(err);
       setErrorMsg(err.response?.data?.message || 'Failed to register vehicle.');
+    }
+  };
+
+  // Open Edit Vehicle modal
+  const openEditVehicle = (vehicle: Vehicle) => {
+    setSelectedVehicle(vehicle);
+    setRegNumber(vehicle.registrationNumber);
+    setModel(vehicle.model);
+    setMake(vehicle.make);
+    setSeatingCapacity(vehicle.seatingCapacity);
+    setMileage(vehicle.mileage);
+    setServiceType(vehicle.serviceType);
+    setVehicleStatus(vehicle.status);
+    setShowEditVehicleModal(true);
+  };
+
+  // Submit Edit Vehicle form
+  const handleEditVehicle = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedVehicle) return;
+    setErrorMsg('');
+    setSuccessMsg('');
+
+    try {
+      await apiClient.put(`/vehicles/${selectedVehicle.id}`, {
+        registrationNumber: regNumber,
+        model,
+        make,
+        seatingCapacity: Number(seatingCapacity),
+        mileage: Number(mileage),
+        serviceType,
+        status: vehicleStatus,
+      });
+
+      setSuccessMsg('Vehicle specifications updated successfully!');
+      setShowEditVehicleModal(false);
+      setSelectedVehicle(null);
+      // Reset form fields
+      setRegNumber('');
+      setModel('');
+      setMake('');
+      setSeatingCapacity(54);
+      setMileage(0);
+      fetchRegistry();
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg(err.response?.data?.message || 'Failed to update vehicle details.');
     }
   };
 
@@ -204,7 +299,15 @@ const Fleet: React.FC = () => {
           <div>
             {activeTab === 'drivers' ? (
               <button
-                onClick={() => setShowDriverModal(true)}
+                onClick={() => {
+                  // Clear fields before open
+                  setDriverName('');
+                  setLicenseNumber('');
+                  setLicenseValidity('');
+                  setPhoneNumber('');
+                  setDriverStatus('ACTIVE');
+                  setShowDriverModal(true);
+                }}
                 className="flex items-center space-x-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-500 rounded-xl text-sm font-semibold text-white shadow-lg cursor-pointer transition"
               >
                 <Plus size={18} />
@@ -212,7 +315,17 @@ const Fleet: React.FC = () => {
               </button>
             ) : (
               <button
-                onClick={() => setShowVehicleModal(true)}
+                onClick={() => {
+                  // Clear fields before open
+                  setRegNumber('');
+                  setModel('');
+                  setMake('');
+                  setSeatingCapacity(54);
+                  setMileage(0);
+                  setServiceType('NORMAL');
+                  setVehicleStatus('ACTIVE');
+                  setShowVehicleModal(true);
+                }}
                 className="flex items-center space-x-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold text-white shadow-lg cursor-pointer transition"
               >
                 <Plus size={18} />
@@ -292,17 +405,17 @@ const Fleet: React.FC = () => {
                   <th className="py-4 px-6">Phone Number</th>
                   <th className="py-4 px-6">Logged Hours</th>
                   <th className="py-4 px-6">Status</th>
-                  {isAdmin && <th className="py-4 px-6 text-right">Actions</th>}
+                  {canModify && <th className="py-4 px-6 text-right">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-850">
                 {loading ? (
                   <tr>
-                    <td colSpan={isAdmin ? 7 : 6} className="py-12 text-center text-slate-500 text-sm">Syncing Drivers Database...</td>
+                    <td colSpan={canModify ? 7 : 6} className="py-12 text-center text-slate-500 text-sm">Syncing Drivers Database...</td>
                   </tr>
                 ) : drivers.length === 0 ? (
                   <tr>
-                    <td colSpan={isAdmin ? 7 : 6} className="py-12 text-center text-slate-500 text-sm">No drivers registered</td>
+                    <td colSpan={canModify ? 7 : 6} className="py-12 text-center text-slate-500 text-sm">No drivers registered</td>
                   </tr>
                 ) : (
                   drivers.map((driver) => (
@@ -323,15 +436,26 @@ const Fleet: React.FC = () => {
                           {driver.status}
                         </span>
                       </td>
-                      {isAdmin && (
+                      {canModify && (
                         <td className="py-4 px-6 text-right">
-                          <button
-                            onClick={() => handleDeleteDriver(driver.id)}
-                            className="p-1 hover:bg-red-500/10 text-slate-500 hover:text-red-400 rounded transition cursor-pointer"
-                            title="Delete profile"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          <div className="flex items-center justify-end space-x-2">
+                            <button
+                              onClick={() => openEditDriver(driver)}
+                              className="p-1 hover:bg-slate-800 text-slate-405 hover:text-slate-200 rounded transition cursor-pointer"
+                              title="Edit profile"
+                            >
+                              <Edit3 size={16} />
+                            </button>
+                            {isAdmin && (
+                              <button
+                                onClick={() => handleDeleteDriver(driver.id)}
+                                className="p-1 hover:bg-red-500/10 text-slate-500 hover:text-red-400 rounded transition cursor-pointer"
+                                title="Delete profile"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
+                          </div>
                         </td>
                       )}
                     </tr>
@@ -355,17 +479,17 @@ const Fleet: React.FC = () => {
                   <th className="py-4 px-6">Total Mileage</th>
                   <th className="py-4 px-6">Service Type</th>
                   <th className="py-4 px-6">Status</th>
-                  {isAdmin && <th className="py-4 px-6 text-right">Actions</th>}
+                  {canModify && <th className="py-4 px-6 text-right">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-850">
                 {loading ? (
                   <tr>
-                    <td colSpan={isAdmin ? 8 : 7} className="py-12 text-center text-slate-500 text-sm">Syncing Fleet Database...</td>
+                    <td colSpan={canModify ? 8 : 7} className="py-12 text-center text-slate-500 text-sm">Syncing Fleet Database...</td>
                   </tr>
                 ) : filteredVehicles.length === 0 ? (
                   <tr>
-                    <td colSpan={isAdmin ? 8 : 7} className="py-12 text-center text-slate-500 text-sm">No vehicles registered</td>
+                    <td colSpan={canModify ? 8 : 7} className="py-12 text-center text-slate-500 text-sm">No vehicles registered</td>
                   </tr>
                 ) : (
                   filteredVehicles.map((vehicle) => (
@@ -393,15 +517,26 @@ const Fleet: React.FC = () => {
                           {vehicle.status}
                         </span>
                       </td>
-                      {isAdmin && (
+                      {canModify && (
                         <td className="py-4 px-6 text-right">
-                          <button
-                            onClick={() => handleDeleteVehicle(vehicle.id)}
-                            className="p-1 hover:bg-red-500/10 text-slate-500 hover:text-red-400 rounded transition cursor-pointer"
-                            title="Remove bus"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          <div className="flex items-center justify-end space-x-2">
+                            <button
+                              onClick={() => openEditVehicle(vehicle)}
+                              className="p-1 hover:bg-slate-800 text-slate-405 hover:text-slate-200 rounded transition cursor-pointer"
+                              title="Edit bus"
+                            >
+                              <Edit3 size={16} />
+                            </button>
+                            {isAdmin && (
+                              <button
+                                onClick={() => handleDeleteVehicle(vehicle.id)}
+                                className="p-1 hover:bg-red-500/10 text-slate-500 hover:text-red-400 rounded transition cursor-pointer"
+                                title="Remove bus"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
+                          </div>
                         </td>
                       )}
                     </tr>
@@ -505,6 +640,102 @@ const Fleet: React.FC = () => {
                   className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-xs font-semibold cursor-pointer transition"
                 >
                   Add Driver
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT DRIVER MODAL */}
+      {showEditDriverModal && selectedDriver && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-zoomIn">
+            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+              <h3 className="text-base font-semibold text-slate-100">Adjust Driver Profile</h3>
+              <button onClick={() => setShowEditDriverModal(false)} className="text-slate-400 hover:text-slate-200 cursor-pointer">
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditDriver} className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Driver Name</label>
+                <input
+                  type="text"
+                  required
+                  value={driverName}
+                  onChange={(e) => setDriverName(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">License Number</label>
+                  <input
+                    type="text"
+                    required
+                    value={licenseNumber}
+                    onChange={(e) => setLicenseNumber(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">License Validity</label>
+                  <input
+                    type="date"
+                    required
+                    value={licenseValidity}
+                    onChange={(e) => setLicenseValidity(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Phone Number</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
+                    <Phone size={16} />
+                  </span>
+                  <input
+                    type="text"
+                    required
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Driver Status</label>
+                <select
+                  value={driverStatus}
+                  onChange={(e) => setDriverStatus(e.target.value as any)}
+                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500"
+                >
+                  <option value="ACTIVE">Active (Duty Ready)</option>
+                  <option value="ON_LEAVE">On Leave</option>
+                  <option value="INACTIVE">Inactive</option>
+                </select>
+              </div>
+
+              {/* Footer */}
+              <div className="flex justify-end space-x-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowEditDriverModal(false)}
+                  className="px-4 py-2 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-xl text-xs font-semibold cursor-pointer transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-xs font-semibold cursor-pointer transition"
+                >
+                  Save Changes
                 </button>
               </div>
             </form>
@@ -625,6 +856,123 @@ const Fleet: React.FC = () => {
                   className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold cursor-pointer transition"
                 >
                   Register Bus
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT VEHICLE MODAL */}
+      {showEditVehicleModal && selectedVehicle && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-zoomIn">
+            <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+              <h3 className="text-base font-semibold text-slate-100">Adjust Vehicle Specifications</h3>
+              <button onClick={() => setShowEditVehicleModal(false)} className="text-slate-400 hover:text-slate-200 cursor-pointer">
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditVehicle} className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Registration Number</label>
+                <input
+                  type="text"
+                  required
+                  value={regNumber}
+                  onChange={(e) => setRegNumber(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Bus Model</label>
+                  <input
+                    type="text"
+                    required
+                    value={model}
+                    onChange={(e) => setModel(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Make / Brand</label>
+                  <input
+                    type="text"
+                    required
+                    value={make}
+                    onChange={(e) => setMake(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Seating Capacity</label>
+                  <input
+                    type="number"
+                    required
+                    value={seatingCapacity}
+                    onChange={(e) => setSeatingCapacity(Number(e.target.value))}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Total Mileage (km)</label>
+                  <input
+                    type="number"
+                    required
+                    value={mileage}
+                    onChange={(e) => setMileage(Number(e.target.value))}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Service Type</label>
+                  <select
+                    value={serviceType}
+                    onChange={(e) => setServiceType(e.target.value as any)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-indigo-500"
+                  >
+                    <option value="NORMAL">Normal</option>
+                    <option value="SEMI_LUXURY">Semi Luxury</option>
+                    <option value="LUXURY">Luxury</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Bus Status</label>
+                  <select
+                    value={vehicleStatus}
+                    onChange={(e) => setVehicleStatus(e.target.value as any)}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-indigo-500"
+                  >
+                    <option value="ACTIVE">Active (Available)</option>
+                    <option value="MAINTENANCE">Maintenance</option>
+                    <option value="OUT_OF_SERVICE">Out of Service</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="flex justify-end space-x-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowEditVehicleModal(false)}
+                  className="px-4 py-2 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-xl text-xs font-semibold cursor-pointer transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold cursor-pointer transition"
+                >
+                  Save Changes
                 </button>
               </div>
             </form>
