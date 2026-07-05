@@ -51,6 +51,13 @@ interface Trip {
   notes?: string;
 }
 
+const toLocalISOString = (dateInput: string | Date) => {
+  const date = new Date(dateInput);
+  if (isNaN(date.getTime())) return '';
+  const tzOffset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
+};
+
 const Schedules: React.FC = () => {
   const { user } = useAuth();
   const canModify = user?.role === 'ADMIN' || user?.role === 'SUPERVISOR';
@@ -164,8 +171,8 @@ const Schedules: React.FC = () => {
     setTripStatus(trip.status);
     setDelayMinutes(trip.delayMinutes);
     setNotes(trip.notes || '');
-    setActualDepartureTime(trip.actualDepartureTime ? trip.actualDepartureTime.slice(0, 16) : '');
-    setActualArrivalTime(trip.actualArrivalTime ? trip.actualArrivalTime.slice(0, 16) : '');
+    setActualDepartureTime(trip.actualDepartureTime ? toLocalISOString(trip.actualDepartureTime) : '');
+    setActualArrivalTime(trip.actualArrivalTime ? toLocalISOString(trip.actualArrivalTime) : '');
     setShowEditModal(true);
   };
 
