@@ -59,8 +59,8 @@ const Landing: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col justify-between selection:bg-teal-500/20">
       {/* Background glow effects */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl -z-10 pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl -z-10 pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-0 h-0 sm:w-96 sm:h-96 bg-teal-500/10 rounded-full blur-3xl -z-10 pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-0 h-0 sm:w-96 sm:h-96 bg-indigo-500/10 rounded-full blur-3xl -z-10 pointer-events-none" />
 
       {/* Navigation Header */}
       <header className="border-b border-slate-900 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40">
