@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { 
@@ -10,12 +10,15 @@ import {
   FileText, 
   LogOut, 
   Bus, 
-  User as UserIcon
+  User as UserIcon,
+  Menu,
+  X
 } from 'lucide-react';
 
 const Layout: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   const handleLogout = () => {
     logout();
@@ -32,9 +35,9 @@ const Layout: React.FC = () => {
   ];
 
   return (
-    <div className="flex min-h-screen bg-slate-950 text-slate-100 font-sans">
-      {/* Sidebar Navigation */}
-      <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0">
+    <div className="flex min-h-screen bg-slate-950 text-slate-100 font-sans relative overflow-hidden">
+      {/* 1. Desktop Sidebar Navigation (Hidden on mobile/tablet) */}
+      <aside className="hidden lg:flex w-64 bg-slate-900 border-r border-slate-800 flex-col justify-between shrink-0">
         <div>
           {/* Logo Section */}
           <div className="h-16 px-6 border-b border-slate-800 flex items-center space-x-3">
@@ -47,7 +50,6 @@ const Layout: React.FC = () => {
           {/* Navigation Links */}
           <nav className="p-4 space-y-1.5">
             {navItems.map((item) => {
-              // Hide links if user does not have permission
               if (user && !item.roles.includes(user.role)) return null;
 
               return (
@@ -94,12 +96,100 @@ const Layout: React.FC = () => {
         </div>
       </aside>
 
-      {/* Main Content Area */}
+      {/* 2. Mobile Sidebar Slide-out Drawer overlay */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 flex lg:hidden bg-black/60 backdrop-blur-sm">
+          <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between h-full animate-slideIn">
+            <div>
+              {/* Header with Close */}
+              <div className="h-16 px-6 border-b border-slate-800 flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <span className="p-2 bg-teal-500/10 border border-teal-500/20 text-teal-400 rounded-lg">
+                    <Bus size={20} />
+                  </span>
+                  <span className="text-lg font-bold tracking-tight text-white">SRMSS</span>
+                </div>
+                <button 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-200 cursor-pointer"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Navigation Links */}
+              <nav className="p-4 space-y-1.5">
+                {navItems.map((item) => {
+                  if (user && !item.roles.includes(user.role)) return null;
+
+                  return (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      onClick={() => setIsMobileMenuOpen(false)} // Close menu drawer on navigate
+                      className={({ isActive }) =>
+                        `flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition duration-200 cursor-pointer ${
+                          isActive
+                            ? 'bg-teal-500/10 text-teal-400 border border-teal-500/20'
+                            : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
+                        }`
+                      }
+                    >
+                      {item.icon}
+                      <span>{item.name}</span>
+                    </NavLink>
+                  );
+                })}
+              </nav>
+            </div>
+
+            {/* User details and Sign Out */}
+            <div className="p-4 border-t border-slate-800">
+              <div className="flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-slate-950/40 border border-slate-800/80 mb-3">
+                <div className="p-2 bg-teal-500/10 text-teal-400 rounded-full">
+                  <UserIcon size={18} />
+                </div>
+                <div className="overflow-hidden">
+                  <h4 className="text-xs font-semibold text-slate-200 truncate">{user?.name}</h4>
+                  <span className="inline-block text-[10px] font-bold text-teal-400 bg-teal-400/5 px-2 py-0.5 rounded border border-teal-400/10">
+                    {user?.role}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  handleLogout();
+                }}
+                className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-red-400 hover:bg-red-500/5 transition cursor-pointer"
+              >
+                <LogOut size={16} />
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </aside>
+          {/* Backdrop dismiss */}
+          <div className="flex-grow h-full" onClick={() => setIsMobileMenuOpen(false)} />
+        </div>
+      )}
+
+      {/* 3. Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <header className="h-16 bg-slate-900 border-b border-slate-800 px-8 flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-slate-400">
-            <span className="text-xs font-medium uppercase tracking-wider">Depot Management System</span>
+        <header className="h-16 bg-slate-900 border-b border-slate-800 px-4 md:px-8 flex items-center justify-between shrink-0">
+          <div className="flex items-center">
+            {/* Hamburger menu button for mobile/tablets */}
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="p-2 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-xl lg:hidden mr-2 cursor-pointer"
+              title="Open Navigation"
+            >
+              <Menu size={20} />
+            </button>
+            <span className="text-xs font-medium uppercase tracking-wider text-slate-400 hidden sm:inline-block">
+              Depot Management System
+            </span>
           </div>
 
           {/* User Status banner */}
@@ -115,7 +205,7 @@ const Layout: React.FC = () => {
         </header>
 
         {/* Dynamic Outlet Views */}
-        <main className="flex-1 overflow-y-auto p-8">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8">
           <Outlet />
         </main>
       </div>
