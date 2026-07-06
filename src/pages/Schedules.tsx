@@ -296,7 +296,8 @@ const Schedules: React.FC = () => {
             type="date"
             value={startDateFilter}
             onChange={(e) => setStartDateFilter(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500"
+            onClick={(e) => e.currentTarget.showPicker()}
+            className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500 cursor-pointer"
           />
         </div>
 

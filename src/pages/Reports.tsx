@@ -152,7 +152,8 @@ const Reports: React.FC = () => {
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none"
+            onClick={(e) => e.currentTarget.showPicker()}
+            className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none cursor-pointer"
           />
         </div>
         <div>
@@ -161,7 +162,8 @@ const Reports: React.FC = () => {
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none"
+            onClick={(e) => e.currentTarget.showPicker()}
+            className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none cursor-pointer"
           />
         </div>
         <div>

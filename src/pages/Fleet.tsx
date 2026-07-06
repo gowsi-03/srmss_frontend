@@ -591,7 +591,8 @@ const Fleet: React.FC = () => {
                     required
                     value={licenseValidity}
                     onChange={(e) => setLicenseValidity(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500"
+                    onClick={(e) => e.currentTarget.showPicker()}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500 cursor-pointer"
                   />
                 </div>
               </div>
@@ -688,7 +689,8 @@ const Fleet: React.FC = () => {
                     required
                     value={licenseValidity}
                     onChange={(e) => setLicenseValidity(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500"
+                    onClick={(e) => e.currentTarget.showPicker()}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500 cursor-pointer"
                   />
                 </div>
               </div>

@@ -447,7 +447,8 @@ const FuelMaintenance: React.FC = () => {
                   required
                   value={fuelDate}
                   onChange={(e) => setFuelDate(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500"
+                  onClick={(e) => e.currentTarget.showPicker()}
+                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-teal-500 cursor-pointer"
                 />
               </div>
 
@@ -589,7 +590,8 @@ const FuelMaintenance: React.FC = () => {
                     required
                     value={scheduledDate}
                     onChange={(e) => setScheduledDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-indigo-500"
+                    onClick={(e) => e.currentTarget.showPicker()}
+                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-indigo-500 cursor-pointer"
                   />
                 </div>
               </div>
