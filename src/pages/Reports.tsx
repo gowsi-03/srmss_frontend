@@ -103,7 +103,7 @@ const Reports: React.FC = () => {
     const startIso = new Date(startDate).toISOString();
     const endIso = new Date(endDate).toISOString();
     
-    const url = `http://localhost:3000/api/reports/pdf?startDate=${startIso}&endDate=${endIso}`;
+    const url = `/reports/pdf?startDate=${startIso}&endDate=${endIso}`;
     
     triggerSecurePdfDownload(url);
   };
