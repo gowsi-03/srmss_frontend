@@ -59,6 +59,16 @@ const Reports: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState<string>('');
 
   const fetchReports = async () => {
+    if (!startDate || !endDate) return;
+
+    if (new Date(startDate) > new Date(endDate)) {
+      setErrorMsg('Start date cannot be after end date.');
+      setPerfData(null);
+      setSustData(null);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setErrorMsg('');
     try {
@@ -86,6 +96,10 @@ const Reports: React.FC = () => {
   }, [startDate, endDate]);
 
   const handleDownloadPdf = () => {
+    if (new Date(startDate) > new Date(endDate)) {
+      setErrorMsg('Start date cannot be after end date.');
+      return;
+    }
     const startIso = new Date(startDate).toISOString();
     const endIso = new Date(endDate).toISOString();
     
